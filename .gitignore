@@ -8,10 +8,10 @@ frontend/.next/
 frontend/out/
 
 # Env files
-.env
-.env.*
-Backend/.env
-frontend/.env
+# .env
+# .env.*
+# Backend/.env
+# frontend/.env
 
 # Logs
 npm-debug.log*
