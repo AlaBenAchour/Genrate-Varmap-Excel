@@ -8,9 +8,10 @@ interface FileGalleryProps {
   handleShowModal: () => void;
 }
 
-export default function FileGallery(
-  { refreshTrigger, handleShowModal }: FileGalleryProps,
-) {
+export default function FileGallery({
+  refreshTrigger,
+  handleShowModal,
+}: FileGalleryProps) {
   const {
     files,
     loading,
@@ -23,6 +24,31 @@ export default function FileGallery(
   } = useFiles({ refreshTrigger });
 
   const { formatFileSize, isImage, formatDate } = useFileUtils();
+  const uploadToDrive = async (file: any) => {
+    try {
+      const res = await fetch("/api/google-drive/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fileUrl: file.url,
+          fileName: file.originalName,
+        }),
+      });
+      console.log("EMAIL:", process.env.GOOGLE_CLIENT_EMAIL);
+      console.log("KEY START:", process.env.GOOGLE_PRIVATE_KEY?.slice(0, 30));
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error);
+
+      alert("Uploaded to Google Drive successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Upload to Google Drive failed");
+    }
+  };
 
   if (loading) {
     return (
@@ -69,12 +95,12 @@ export default function FileGallery(
           >
             {useTemporaryUrls ? "Use Permanent URLs" : "Use Temporary URLs"}
           </button>
-          <button
+          {/* <button
             onClick={handleShowModal}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors bg-orange-500 text-white hover:bg-orange-600`}
           >
             Open Modal
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -97,7 +123,7 @@ export default function FileGallery(
                   {file.visibility === "private" && (
                     <button
                       onClick={() => generateTemporaryUrl(file.id)}
-                      className="text-blue-500 hover:text-blue-700 p-1"
+                      className="text-blue-500 hover:text-blue-700 p-1 cursor-pointer"
                       title="Generate temporary URL"
                     >
                       <svg
@@ -117,7 +143,7 @@ export default function FileGallery(
                   )}
                   <button
                     onClick={() => deleteFile(file.id)}
-                    className="text-red-500 hover:text-red-700 p-1"
+                    className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
                     title="Delete file"
                   >
                     <svg
@@ -131,6 +157,25 @@ export default function FileGallery(
                         strokeLinejoin="round"
                         strokeWidth="2"
                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => uploadToDrive(file)}
+                    className="text-green-500 hover:text-green-700 p-1 cursor-pointer"
+                    title="Upload to Google Drive"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 17l6-10h6l6 10M9 7l6 10M3 17h18"
                       />
                     </svg>
                   </button>

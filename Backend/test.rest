@@ -1,1 +1,1 @@
-GET http://localhost:5000/api/data
+GET http://localhost:5000/api/health

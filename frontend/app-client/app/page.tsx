@@ -4,6 +4,7 @@ import { useState } from "react";
 import FileUpload from "@/components/FileUpload";
 import FileGallery from "@/components/FileGallery";
 import GenerateModul from "@/components/GenerateModul";
+import FileUploadWithModal from "@/components/FileUploadWithModal";
 
 interface UploadedFile {
   id: string;
@@ -47,9 +48,11 @@ export default function Home() {
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Upload Files
           </h2>
-          <FileUpload
+        
+           <FileUploadWithModal
             onUploadComplete={handleUploadComplete}
-            accept="*/*"
+            // accept="*/*"
+             accept=".h"
             maxSize={50 * 1024 * 1024} // 50MB
             multiple={true}
           />
